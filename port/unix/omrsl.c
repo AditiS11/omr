@@ -485,6 +485,13 @@ omrsl_get_libraries(struct OMRPortLibrary *portLibrary, OMRLibraryInfoCallback c
 				"Failed to open /proc/self/maps");
 		return (uintptr_t)(intptr_t)portableError;
 	}
+	if (NULL == callback) {
+		portLibrary->error_set_last_error_with_message(
+				portLibrary,
+				OMRPORT_ERROR_OPFAILED,
+				"Callback function is NULL.");
+		return (uintptr_t)(intptr_t)OMRPORT_ERROR_OPFAILED;
+	}
 	while (NULL != portLibrary->file_read_text(portLibrary, fd, buffer, sizeof(buffer))) {
 		if (NULL == strchr(buffer, '\n')) {
 			portableError = portLibrary->error_last_error_number(portLibrary);
@@ -511,6 +518,13 @@ omrsl_get_libraries(struct OMRPortLibrary *portLibrary, OMRLibraryInfoCallback c
 #elif defined(OSX) /* defined(LINUX) */
 	uint32_t imageCount = _dyld_image_count();
 	uint32_t i = 0;
+	if (NULL == callback) {
+		portLibrary->error_set_last_error_with_message(
+				portLibrary,
+				OMRPORT_ERROR_OPFAILED,
+				"Callback function is NULL.");
+		return (uintptr_t)(intptr_t)OMRPORT_ERROR_OPFAILED;
+	}
 	for (i = 0; i < imageCount; ++i) {
 		intptr_t slide = 0;
 		const struct mach_header_64 *header = NULL;
