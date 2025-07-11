@@ -7732,6 +7732,13 @@ alloc_failed:
 		Trc_PRT_failed_to_open_proc(rc);
 		return (uintptr_t)(intptr_t)rc;
 	}
+	if (NULL == callback) {
+		portLibrary->error_set_last_error_with_message(
+				portLibrary,
+				OMRPORT_ERROR_OPFAILED,
+				"Callback function is NULL.");
+		return (uintptr_t)(intptr_t)OMRPORT_ERROR_OPFAILED;
+	}
 	/* Allocate initial buffer. */
 	command = (char *)portLibrary->mem_allocate_memory(
 			portLibrary,
